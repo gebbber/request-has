@@ -1,4 +1,4 @@
-# if-request-has v0.0.1
+# request-has v0.0.1
 
 Simple request body / session validation middleware for Express
 
@@ -6,7 +6,7 @@ Simple request body / session validation middleware for Express
 
 ```javascript
 const app = express();
-const {ifBodyHas, ifSessionHas} = require('if-request-has');
+const {ifBodyHas, ifSessionHas} = require('request-has');
 
 const {logIn, logOut} = require('./auth/log-in-log-out.js');
 

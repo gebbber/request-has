@@ -1,5 +1,5 @@
 {
-  "name": "if-request-has",
+  "name": "request-has",
   "version": "0.0.1",
   "description": "Simple request body / session validation middleware for Express",
   "main": "index.js",
@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gebbber/if-request-has.git"
+    "url": "git+https://github.com/gebbber/request-has.git"
   },
   "keywords": [],
   "author": "Gregory Everett Brandon",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gebbber/if-request-has/issues"
+    "url": "https://github.com/gebbber/request-has/issues"
   },
-  "homepage": "https://github.com/gebbber/if-request-has#readme",
+  "homepage": "https://github.com/gebbber/request-has#readme",
   "devDependencies": {
     "chai": "^4.3.4",
     "mocha": "^9.1.4",
