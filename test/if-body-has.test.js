@@ -5,110 +5,76 @@ const {ifBodyHas} = require('../index');
 describe('ifBodyHas(properties) checks whether req.body has properties', ()=>{
     
     it('returns a function', ()=>{
-        const middleware = ifBodyHas(['username','password']);
+        const middleware = ifBodyHas(['userId','loggedInAt']);
         expect(middleware).to.be.a('function');
     });
 
-    it('sets status 400 if there is no req.body', (done)=>{
-        const middleware = ifBodyHas(['username','password']);
+    it('runs next("route") if there is no req.body', (done)=>{
+        const middleware = ifBodyHas(['userId','loggedInAt']);
         const req={};
-        const res={status: (n)=>{
-            expect(n).to.equal(400);
+        const res={};
+        const next=(a)=>{
+            expect(a).to.equal('route');
             done();
-        }};
-        const next=()=>{};
-        middleware(req, res, next);
-    });
-
-    it('sends an error message if there is no req.body and some properties were required', (done)=>{
-        const middleware = ifBodyHas(['username','password']);
-        const req={};
-        const res={
-            status: ()=>{return res;},
-            send: (text)=>{
-                expect(text).to.be.a('string');
-                expect(text.length).to.be.greaterThan(0);
-                done();
-            }
         };
-        const next=()=>{};
         middleware(req, res, next);
     });
 
-    it('sends an error message if there is no req.body and no properties were required', (done)=>{
+    it('runs next("route") if there is no req.body and some properties were required', (done)=>{
+        const middleware = ifBodyHas(['userId','loggedInAt']);
+        const req={};
+        const res={};
+        const next=(a)=>{
+            expect(a).to.equal('route');
+            done();
+        };
+        middleware(req, res, next);
+    });
+
+    it('runs next("route") if there is no req.body and no properties were required', (done)=>{
         const middleware = ifBodyHas();
         const req={};
-        const res={
-            status: ()=>{return res;},
-            send: (text)=>{
-                expect(text).to.be.a('string');
-                expect(text.length).to.be.greaterThan(0);
-                done();
-            }
+        const res={};
+        const next=(a)=>{
+            expect(a).to.equal('route');
+            done();
         };
-        const next=()=>{};
         middleware(req, res, next);
     });
 
-    it('executes next() if req.body has the required properties', (done)=>{
-        const middleware = ifBodyHas(['username','password']);
-        const req={body:{username: "", password: ""}};
+    it('executes next() with no arguments if req.body has the required properties', (done)=>{
+        const middleware = ifBodyHas(['userId','loggedInAt']);
+        const req={body:{userId: "", loggedInAt: ""}};
         const res={};
-        const next=done;
+        const next=(a)=>{
+            expect(a).to.be.undefined;
+            done();
+        };
         middleware(req, res, next);
     });
 
     
-    it('executes next() if req.body exists and no properties are required', (done)=>{
+    it('executes next() with no arguments if req.body exists and no properties are required', (done)=>{
         const middleware = ifBodyHas();
         const req={body:{}};
         const res={};
-        const next=done;
-        middleware(req, res, next);
-    });
-
-    it('sets status 400 if there is a missing req.body property', (done)=>{
-        const middleware = ifBodyHas(['username', 'password']);
-        const req={body: {username: ''}};
-        const res={status: (n)=>{
-            expect(n).to.equal(400);
+        const next=(a)=>{
+            expect(a).to.be.undefined;
             done();
-        }};
-        const next=()=>{};
-        middleware(req, res, next);
-    });
-
-    it('sends an error message if there is a missing req.body property', (done)=>{
-        const middleware = ifBodyHas(['username', 'password']);
-        const req={body: {username: ''}};
-        const res={
-            status: ()=>{return res;},
-            send: (text)=>{
-                expect(text).to.be.a('string');
-                expect(text.length).to.be.greaterThan(0);
-                done();
-            }
         };
-        const next=()=>{};
         middleware(req, res, next);
     });
 
-    it('mentions the name of a missing req.body property', (done)=>{
-        const middleware = ifBodyHas(['username', 'password']);
-        const req={body: {username: ''}};
-        const res={
-            status: ()=>{return res;},
-            send: (text)=>{
-                console.log(text);
-                expect(text).to.be.a('string');
-                expect(text.includes('password')).to.be.true;
-                done();
-            }
+    it('executes next("route") if there is a missing req.body property', (done)=>{
+        const middleware = ifBodyHas(['userId', 'loggedInAt']);
+        const req={body: {userId: ''}};
+        const res={};
+        const next=(a)=>{
+            expect(a).to.equal('route');
+            done();
         };
-        const next=()=>{};
         middleware(req, res, next);
     });
-
-    
+  
         
 });

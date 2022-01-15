@@ -1,6 +1,8 @@
 module.exports = {
-    ifBodyHas, 
+    bodyMustHave, 
+    sessionMustHave,
     ifSessionHas,
+    ifBodyHas,
     
     // just for unit tests:
     _have: have, 
@@ -8,24 +10,48 @@ module.exports = {
     _parse: parse
 }
 
-function ifBodyHas(items) {
+function bodyMustHave(items) {
     return (req, res, next) => {
         checkFor({"request body":req.body}, items, res, next);
     }
 }
 
-function ifSessionHas(items) {
+function ifBodyHas(items) {
     return (req, res, next) => {
-        checkFor({"session":req.session}, items, res, next);
+        checkFor({"request body":req.body}, items, res, next, 'route');
     }
 }
 
-function checkFor(obj, items, res, next) {
+function ifSessionHas(items) {
+    return (req, res, next) => {
+        checkFor({"session":req.session}, items, res, next, 'route');
+    }
+}
+
+function sessionMustHave(items, errCode) {
+    return (req, res, next) => {
+        checkFor({"session":req.session}, items, res, next, errCode || 401);
+    }
+}
+
+function checkFor(obj, items, res, next, errCode) {
     const key = Object.keys(obj)[0];
     const target = obj[key];
-    if (!target) return res.status(400).send('No '+key);
+    if (!target) {
+        if (errCode) {
+            if (typeof errCode === 'number') return res.sendStatus(errCode);
+            return next(errCode);
+        }
+        return res.status(errCode || 400).send('No '+key);
+    }
     const missing = have(parse(items), target);
-    if (missing.length) return res.status(400).send(key+' needs: '+missing.join(', '));
+    if (missing.length) {
+        if (errCode) {
+            if (typeof errCode === 'number') return res.sendStatus(errCode);
+            return next(errCode);
+        }
+        return res.status(400).send(key+' needs: '+missing.join(', '));
+    }
     next();
 }
 
